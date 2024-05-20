@@ -10,6 +10,21 @@ using namespace std;
 Segment::Segment(const S2d& _base, double _angle, double _longueur):
 	base(_base), angle(_angle), longueur(_longueur) {}
 
+S2d get_end_of_segment(const Segment& seg) {
+	S2d end;
+	end.x = seg.base.x + seg.longueur * cos(seg.angle);
+	end.y = seg.base.y + seg.longueur * sin(seg.angle);
+	return end;
+}
+
+double get_distance(const Sd2& s1, const Sd2& s2) {
+	return sqrt(pow(s1.x - s2.x, 2) + pow(s1.y - s2.y, 2));
+}
+
+double dot_product(const S2d& u, const S2d& v) {
+	return u.x * v.x + u.y * v.y;
+}
+
 double ecart_angulaire(Segment segment_1, Segment segment_2)
 {
 	double ecart(segment_1.angle + (M_PI - segment_2.angle));

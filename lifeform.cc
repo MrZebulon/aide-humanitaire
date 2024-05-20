@@ -65,6 +65,11 @@ const int Lifeform::get_lifeform_age()
 	return age_lifeform;
 }
 
+void Lifeform::set_lifeform_age(int age)
+{
+	age_lifeform = age;
+}
+
 const bool Corail::corail_in(bool output)
 {
 	for (int i(0); i<= nb_segment-1; ++i)
@@ -180,6 +185,11 @@ const Segment Corail::get_cor_element(int i)
 	return cor[i];
 }
 
+const Segment Corail::get_last_segment()
+{
+	return cor.back();
+}
+
 const size_t Corail::get_cor_size()
 {
 	return cor.size();
@@ -237,57 +247,57 @@ bool Algue::maj_algue()
 	return (age_lifeform == int_max_life_alg);
 }
 	
-bool Corail::maj_corail(double angle, int j){
+bool Corail::maj_corail(Alga* alga, double direction_to_closest){
 	++age_lifeform;
 	
-	int int_max_life_cor(max_life_cor);
-	if (age_lifeform == int_max_life_cor){
+	if (age_lifeform >= (int) max_life_cor){
 		status_corail = Status_cor::DEAD;
 	}
 	
 	// Increase length if there's an alga
-	if (j != -1){
+	if(alga) {
 		cor.back().longueur += delta_l;
 	}
-	
-	double double_l_repro(l_repro);
-	bool is_repro(false);
-	
-	if (status_corail == Status_cor::ALIVE){
 		
-		if (cor.back().longueur < double_l_repro){
-			
-			// Rotate in the right direction
-			if (dir_rot_corail == Dir_rot_cor::TRIGO){
-				cor.back().angle += angle;
-				
-				if (cor.back().angle > M_PI){
-					cor.back().angle -= 2*M_PI;
-				}
-			} else {
-				cor.back().angle -= angle;
-				
-				if (cor.back().angle < -M_PI){
-					cor.back().angle += 2*M_PI;
-				}
-			}
-		} else {
-			if (status_develo == Status_dev::EXTEND){
-				S2d pos{cor.back().base.x + cor.back().longueur*cos(cor.back().angle),
-						cor.back().base.y + cor.back().longueur*sin(cor.back().angle)};
-				Segment seg{pos, cor.back().angle, l_repro - l_seg_interne};
-				cor.emplace_back(seg);
-				++nb_segment;
-				status_develo = Status_dev::REPRO;
-			} else {
-				cor.back().longueur = l_repro/2;
-				is_repro = true;
-				status_develo = Status_dev::EXTEND;
-			}
-		}
-		
+	// Dead
+	if(status_corail == Status_cor::DEAD) {
+		return false;
 	}
-	return is_repro;
+
+	// Can't reproduce
+	if (cor.back().longueur < (double)l_repro) {
+
+		// Rotate the coral
+		double step = (dir_rot_corail == Dir_rot_cor::TRIGO) ? angle : -angle;
+		cor.back().angle += step;
+
+		// Ensure angle is within -pi and +pi
+		if (cor.back().angle > M_PI) {
+			cor.back().angle -= 2 * M_PI;
+		} 
+		
+		if (cor.back().angle < -M_PI) {
+			cor.back().angle += 2 * M_PI;
+		}
+
+		return false;
+	}
+
+	// Can reproduce and in RERPO state
+	if(status_develo == Status_dev::REPRO){
+		cor.back().longueur = l_repro/2;
+		status_develo = Status_dev::EXTEND;
+		return true;
+	}
+
+	// Can reproduce and in EXTEND state
+	S2d tip = get_end_of_segment(cor.back());
+	Segment seg{pos, cor.back().angle, l_repro - l_seg_interne};
+	cor.emplace_back(seg);
+	++nb_segment;
+	status_develo = Status_dev::REPRO;
+	return false;
+
 }
 
 bool Corail::not_superpo_active(double vieil_angle){

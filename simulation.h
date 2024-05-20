@@ -37,22 +37,29 @@ private:
 	int nb_sim = 0;
 	
 	void new_alga(double x, double y, int age, bool& test, bool output);
-	Corail* new_coral(double x, double y, int age, unsigned int id, 
-					  int status_cor, int dir_rot, int status_dev, int nb_seg, 
-					  bool& test, bool output);
-	void new_sca(double x, double y, int age, double rayon, int status_sca, 
-				 int target_id, bool& test, bool output);
-	void new_segment(double angle, double length, Corail *current, bool& test, 
-					 bool output);
+	Corail* new_coral(double x, double y, int age, unsigned int id, int status_cor, int dir_rot, int status_dev, int nb_seg, bool& test, bool output);
+	void new_sca(double x, double y, int age, double rayon, int status_sca, int target_id, bool& test, bool output);
+	void new_segment(double angle, double length, Corail *current, bool& test, bool output);
+    
+    /* COR */
+
     bool id_match(unsigned int tested_id, bool& test);
-    const int algue_proche(size_t i);
+
+    void super_maj_cor(Coral& coral);
+
+    Alga* get_closest_eatable_alga(const Coral& coral, double* dist, double* angle);
+    bool get_angle_step(const Coral& coral, const Alga& alga, double& angle);
+    void Simulation::eat_alga(Coral& coral, Alga& alga, double dist, double angle, bool out_of_range_angle);
+
     void destruction_algue(int j);
     const double calcul_angle(size_t i, int j);
     const unsigned int creation_id();
     void apparition_aleatoire_algue();
-    void super_maj_cor(size_t i);
+
     bool not_intersec_others(size_t k, S2d fin);
     void batterie_tests(size_t i,double vieil_angle, bool& test, std::vector <bool>& coll);
+
+    /* SCA */
     void free_sca_creation (std::vector<Sca*> &free_scavengers);
     void dead_free_corals_creation (std::vector <Corail> &dead_free_corals);
     

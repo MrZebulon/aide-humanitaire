@@ -17,6 +17,7 @@ public:
 	const bool positive_age(bool output);
 	const S2d get_lifeform_pos();
 	const int get_lifeform_age();
+	void set_lifeform_age(int age);
 protected:
 	S2d pos_lifeform;
 	int age_lifeform;
@@ -42,12 +43,14 @@ public:
 	const bool segment_not_coll_him(bool is_epsil_zero, bool output);
 	const void add_segment(double angle, double length);
 	const Segment get_cor_element(int i);
+	const Segment get_last_segment();
 	const size_t get_cor_size();
 	const unsigned int get_cor_id();
 	const int get_cor_status();
 	const int get_cor_dir();
 	const int get_cor_dev();
-	bool maj_corail(double angle, int j);
+
+	bool Corail::maj_corail(Alga* alga, double direction_to_closest);
 	bool not_superpo_active(double vieil_angle);
 	void change_dir();
 	const bool in_bord(S2d fin);

@@ -25,7 +25,12 @@ struct Segment{
 	Segment(const S2d& _base, double _angle, double _longueur);
 };
 
+S2d get_end_of_segment(const Segment& seg);
+double get_distance(const Sd2& s1, const Sd2& s2);
+double dot_product(const S2d& u, const S2d& v);
+
 double ecart_angulaire(Segment segment_1, Segment segment_2);
+
 bool superpo_commun(Segment segment_1, Segment segment_2, bool is_epsil_zero);
 bool on_segment(S2d p, S2d q, S2d r, bool is_epsil_zero);
 int orientation(S2d p, S2d q, S2d r, bool is_epsil_zero);
